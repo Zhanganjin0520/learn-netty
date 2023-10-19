@@ -35,6 +35,7 @@ public class MultiplexerTimeServer implements Runnable {
             log.info("The time server is start in port: {}", port);
         } catch (IOException e) {
             log.error("", e);
+            System.exit(1);
         }
     }
 
@@ -47,6 +48,7 @@ public class MultiplexerTimeServer implements Runnable {
     public void run() {
         while (!stop) {
             try {
+                //休眠时间为1s selector 每隔1s 被唤醒一次
                 selector.select(1000);
                 Set<SelectionKey> selectionKeys = selector.selectedKeys();
                 Iterator<SelectionKey> iterator = selectionKeys.iterator();
@@ -54,9 +56,19 @@ public class MultiplexerTimeServer implements Runnable {
                 while (iterator.hasNext()) {
                     key = iterator.next();
                     iterator.remove();
-                    handleInput(key);
+                    try {
+                        handleInput(key);
+                    } catch (Exception ex) {
+                        if (key != null) {
+                            key.cancel();
+                            if (key.channel() != null) {
+                                key.channel().close();
+                            }
+                        }
+                    }
+
                 }
-            } catch (IOException e) {
+            } catch (Throwable e) {
                 log.error("", e);
             }
         }
@@ -76,6 +88,7 @@ public class MultiplexerTimeServer implements Runnable {
             if (key.isReadable()) {
                 //Read the data
                 SocketChannel socketChannel = (SocketChannel) key.channel();
+                //作为例子 开辟 1MB 的缓冲区
                 ByteBuffer readBuffer = ByteBuffer.allocate(1024);
                 int readBytes = socketChannel.read(readBuffer);
                 if (readBytes > 0) {
@@ -86,6 +99,7 @@ public class MultiplexerTimeServer implements Runnable {
                     log.info("The time server receive order: {}", body);
                     String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(body) ? new Date().toString() : "BAD ORDER";
                     doWrite(socketChannel, currentTime);
+                    //返回值为 -1 链路已经关闭 需要关闭 SocketChannel 释放资源
                 } else if (readBytes < 0) {
                     //对端链路关闭
                     key.channel();
