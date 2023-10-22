@@ -20,12 +20,12 @@ import java.util.Set;
  * @date 2023/10/19 21:50
  */
 @Slf4j
-public class MultiplexerTimeServer implements Runnable {
+public class MultiplexerTimeServerHandle implements Runnable {
     private Selector selector;
     private ServerSocketChannel serverChannel;
     private volatile boolean stop;
 
-    public MultiplexerTimeServer(int port) {
+    public MultiplexerTimeServerHandle(int port) {
         try {
             selector = Selector.open();
             serverChannel = ServerSocketChannel.open();
@@ -91,6 +91,7 @@ public class MultiplexerTimeServer implements Runnable {
                 //作为例子 开辟 1MB 的缓冲区
                 ByteBuffer readBuffer = ByteBuffer.allocate(1024);
                 int readBytes = socketChannel.read(readBuffer);
+                //返回值大于0 读到了字节 对字节进行编解码
                 if (readBytes > 0) {
                     readBuffer.flip();
                     byte[] bytes = new byte[readBuffer.remaining()];
@@ -105,6 +106,7 @@ public class MultiplexerTimeServer implements Runnable {
                     key.channel();
                     socketChannel.close();
                 }
+                //返回值等于 0 没有读取到字节 属于正常场景 忽略
             }
         }
     }
