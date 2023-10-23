@@ -83,6 +83,7 @@ public class MultiplexerTimeServerHandle implements Runnable {
                 SocketChannel socketChannel = serverSocketChannel.accept();
                 socketChannel.configureBlocking(false);
                 //Add the new connection to the selector
+                //向多路复用注册器读事件 OP_READ
                 socketChannel.register(selector, SelectionKey.OP_READ);
             }
             if (key.isReadable()) {
@@ -93,8 +94,13 @@ public class MultiplexerTimeServerHandle implements Runnable {
                 int readBytes = socketChannel.read(readBuffer);
                 //返回值大于0 读到了字节 对字节进行编解码
                 if (readBytes > 0) {
+                    //将缓冲区的当前limit设置为position,position设置为0
+                    //用于后续对缓冲区的读取操作
+                    //目的就是为了从头开始读数据，将例子中的16个字节读取到数组中
                     readBuffer.flip();
+                    //根据缓冲区可读的字节个数创建字节数组
                     byte[] bytes = new byte[readBuffer.remaining()];
+                    //将可读的字节数组复制到新创建的字节数组中
                     readBuffer.get(bytes);
                     String body = new String(bytes, StandardCharsets.UTF_8);
                     log.info("The time server receive order: {}", body);
@@ -113,9 +119,11 @@ public class MultiplexerTimeServerHandle implements Runnable {
 
     private void doWrite(SocketChannel channel, String resp) throws IOException {
         if (resp != null && resp.trim().length() > 0) {
-            byte[] bytes = resp.getBytes(StandardCharsets.UTF_8);
+            byte[] bytes = resp.getBytes();
             ByteBuffer writerBuffer = ByteBuffer.allocate(bytes.length);
+            //将字节数组复制到缓冲区中的字节数组
             writerBuffer.put(bytes);
+            //对缓冲区进行 flip 操作
             writerBuffer.flip();
             channel.write(writerBuffer);
         }

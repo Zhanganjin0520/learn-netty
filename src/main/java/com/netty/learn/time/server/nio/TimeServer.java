@@ -12,7 +12,7 @@ public class TimeServer {
             port = Integer.parseInt(args[0]);
         }
 
-        MultiplexerTimeServerHandle timeServer = new MultiplexerTimeServerHandle(port);
-        new Thread(timeServer, "NIO-MultiplexerTimeServer-001").start();
+        MultiplexerTimeServerHandle handle = new MultiplexerTimeServerHandle(port);
+        new Thread(handle, "NIO-MultiplexerTimeServer-001").start();
     }
 }

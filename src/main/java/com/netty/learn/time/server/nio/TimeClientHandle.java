@@ -8,7 +8,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -95,6 +94,7 @@ public class TimeClientHandle implements Runnable {
             //判断是否连接成功
             SocketChannel socketChannel = (SocketChannel) key.channel();
             if (key.isConnectable()) {
+                //连接结果进行判断
                 if (socketChannel.finishConnect()) {
                     socketChannel.register(selector, SelectionKey.OP_READ);
                     doWrite(socketChannel);
@@ -109,8 +109,8 @@ public class TimeClientHandle implements Runnable {
                 if (readBytes > 0) {
                     readBuffer.flip();
                     byte[] bytes = new byte[readBuffer.remaining()];
-                    readBuffer.get();
-                    String body = new String(bytes, StandardCharsets.UTF_8);
+                    readBuffer.get(bytes);
+                    String body = new String(bytes);
                     log.info("Now is :{}", body);
                     this.stop = true;
                 } else if (readBytes < 0) {
@@ -134,6 +134,7 @@ public class TimeClientHandle implements Runnable {
             socketChannel.register(selector, SelectionKey.OP_READ);
             doWrite(socketChannel);
         } else {
+            //连接未成功 注册连接连接事件
             socketChannel.register(selector, SelectionKey.OP_CONNECT);
         }
     }
