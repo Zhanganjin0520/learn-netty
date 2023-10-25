@@ -8,7 +8,7 @@ import java.nio.channels.CompletionHandler;
 
 /**
  * @author Zhang Anjin
- * @description AIO 回调 handler
+ * @description 与客户端连接完成接回调
  * @date 2023/10/24 21:22
  */
 @Slf4j
@@ -17,7 +17,9 @@ public class AcceptCompletionHandler implements CompletionHandler<AsynchronousSo
     @Override
     public void completed(AsynchronousSocketChannel result, AsyncTimeServerHandler attachment) {
         attachment.socketChannel.accept(attachment, this);
+        //缓冲区
         ByteBuffer buffer = ByteBuffer.allocate(1024);
+        //第二个 buffer 通知回调的入参
         result.read(buffer, buffer, new ReadCompletionHandler(result));
     }
 

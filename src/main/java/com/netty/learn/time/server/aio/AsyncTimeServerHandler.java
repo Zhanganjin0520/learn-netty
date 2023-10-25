@@ -9,7 +9,7 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * @author Zhang Anjin
- * @description AIO Time Server Handler
+ * @description AIO Time Server Handle
  * @date 2023/10/24 21:13
  */
 @Slf4j
@@ -32,6 +32,7 @@ public class AsyncTimeServerHandler implements Runnable {
     @Override
     public void run() {
         countDownLatch = new CountDownLatch(1);
+        //接收客户端连接
         doAccept();
         try {
             //完成 Accept 之前当前线程阻塞
