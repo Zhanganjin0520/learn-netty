@@ -35,7 +35,10 @@ public class AsyncTimeClientHandler implements
 
     @Override
     public void run() {
+        //防止异步操作没有执行完成就退出
         latch = new CountDownLatch(1);
+        //attachment 回调通知的入参
+        //回调通知接口
         client.connect(new InetSocketAddress(host, port), this, this);
         try {
             latch.await();
