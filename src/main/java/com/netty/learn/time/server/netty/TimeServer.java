@@ -23,16 +23,23 @@ public class TimeServer {
      * @param port .
      */
     public void bind(int port) {
-        //配置服务端的 NIO 线程组
+        //配置服务端的 NIO 线程组 实际就是 Reactor 线程组
+        //处理客户端网络连接
         EventLoopGroup bossGroup = new NioEventLoopGroup();
+        //SocketChannel 读写
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         ServerBootstrap bootstrap = new ServerBootstrap();
+        //绑定线程组
         bootstrap.group(bossGroup, workerGroup)
+                //设置 Channel 类型
                 .channel(NioServerSocketChannel.class)
+                //设置 TCP 参数
                 .option(ChannelOption.SO_BACKLOG, 1024)
+                //配置 Handler
                 .childHandler(new ChildChannelHandler());
         try {
             //绑定端口，同步等待成功
+            //异步操作的通知回调
             ChannelFuture future = bootstrap.bind(port).sync();
             //等待服务端监听端口
             future.channel().closeFuture().sync();
