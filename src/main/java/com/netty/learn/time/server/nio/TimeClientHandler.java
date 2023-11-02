@@ -17,14 +17,14 @@ import java.util.Set;
  * @date 2023/10/22 21:33
  */
 @Slf4j
-public class TimeClientHandle implements Runnable {
+public class TimeClientHandler implements Runnable {
     private String host;
     private int port;
     private Selector selector;
     private SocketChannel socketChannel;
     private volatile boolean stop;
 
-    public TimeClientHandle(String host, int port) {
+    public TimeClientHandler(String host, int port) {
         this.host = host;
         this.port = port;
         try {
