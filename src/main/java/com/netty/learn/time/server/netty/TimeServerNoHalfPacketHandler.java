@@ -15,7 +15,7 @@ import java.util.Date;
  * @date 2023/10/31 22:42
  */
 @Slf4j
-public class TimeServerHalfPacketHandler extends ChannelInboundHandlerAdapter {
+public class TimeServerNoHalfPacketHandler extends ChannelInboundHandlerAdapter {
 
     //发送
     private int counter;
