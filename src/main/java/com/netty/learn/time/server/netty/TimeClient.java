@@ -1,5 +1,6 @@
 package com.netty.learn.time.server.netty;
 
+import com.netty.learn.time.server.netty.tcp.TimeClientNoHalfPacketHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -32,7 +33,9 @@ public class TimeClient {
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new TimeClientHandler());
+//                            ch.pipeline().addLast(new TimeClientHandler());
+                            //验证无半包处理
+                            ch.pipeline().addLast(new TimeClientNoHalfPacketHandler());
                         }
                     });
             //发起异步连接

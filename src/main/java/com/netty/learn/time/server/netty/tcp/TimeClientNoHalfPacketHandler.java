@@ -1,4 +1,4 @@
-package com.netty.learn.time.server.netty;
+package com.netty.learn.time.server.netty.tcp;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -22,6 +22,7 @@ public class TimeClientNoHalfPacketHandler extends ChannelInboundHandlerAdapter 
      * create a client-side handler
      */
     public TimeClientNoHalfPacketHandler() {
+        //line.separator is \n used one byte
         req = ("QUERY TIME ORDER" + System.getProperty("line.separator")).getBytes(StandardCharsets.UTF_8);
     }
 

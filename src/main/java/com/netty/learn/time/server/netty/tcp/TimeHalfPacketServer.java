@@ -1,6 +1,5 @@
-package com.netty.learn.time.server.netty;
+package com.netty.learn.time.server.netty.tcp;
 
-import com.netty.learn.time.server.netty.tcp.TimeServerNoHalfPacketHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -9,25 +8,25 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Zhang Anjin
- * @description netty time server
- * @date 2023/10/31 22:30
+ * @description tcp 粘包处理
+ * @date 2023/11/6 22:29
  */
 @Slf4j
-public class TimeServer {
+public class TimeHalfPacketServer {
     /**
-     * bind
+     * bind port
      *
      * @param port .
      */
     public void bind(int port) {
-        //配置服务端的 NIO 线程组 实际就是 Reactor 线程组
-        //处理客户端网络连接
+        //配置服务端的 NIO 线程组
         EventLoopGroup bossGroup = new NioEventLoopGroup();
-        //SocketChannel 读写
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         ServerBootstrap bootstrap = new ServerBootstrap();
         //绑定线程组
@@ -55,19 +54,19 @@ public class TimeServer {
 
     public static void main(String[] args) {
         int port = 8080;
-        new TimeServer().bind(port);
+        new TimeHalfPacketServer().bind(port);
     }
 
     /**
      * handler
      */
-    class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
+    private class ChildChannelHandler extends ChannelInitializer<SocketChannel> {
 
         @Override
-        protected void initChannel(SocketChannel socketChannel) throws Exception {
-//            socketChannel.pipeline().addLast(new TimeServerHandler());
-            //验证无半包处理 handler
-            socketChannel.pipeline().addLast(new TimeServerNoHalfPacketHandler());
+        protected void initChannel(SocketChannel ch) throws Exception {
+            ch.pipeline().addLast(new LineBasedFrameDecoder(1024));
+            ch.pipeline().addLast(new StringDecoder());
+            ch.pipeline().addLast(new TimeServerHalfPacketHandler());
         }
     }
 }

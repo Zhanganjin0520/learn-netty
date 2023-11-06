@@ -1,4 +1,4 @@
-package com.netty.learn.time.server.netty;
+package com.netty.learn.time.server.netty.tcp;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -8,15 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 
-
 /**
  * @author Zhang Anjin
- * @description netty time server half server handler
- * @date 2023/10/31 22:42
+ * @description 半包处理
+ * @date 2023/11/6 22:36
  */
 @Slf4j
-public class TimeServerNoHalfPacketHandler extends ChannelInboundHandlerAdapter {
-
+public class TimeServerHalfPacketHandler extends ChannelInboundHandlerAdapter {
     //发送
     private int counter;
 
