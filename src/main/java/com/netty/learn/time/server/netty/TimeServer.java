@@ -1,5 +1,6 @@
 package com.netty.learn.time.server.netty;
 
+import com.netty.learn.time.server.netty.tcp.TimeServerHalfPacketHandler;
 import com.netty.learn.time.server.netty.tcp.TimeServerNoHalfPacketHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -68,6 +69,8 @@ public class TimeServer {
 //            socketChannel.pipeline().addLast(new TimeServerHandler());
             //验证无半包处理 handler
             socketChannel.pipeline().addLast(new TimeServerNoHalfPacketHandler());
+            //验证处理半包
+//            socketChannel.pipeline().addLast(new TimeServerHalfPacketHandler());
         }
     }
 }

@@ -1,6 +1,5 @@
-package com.netty.learn.time.server.netty;
+package com.netty.learn.time.server.netty.tcp;
 
-import com.netty.learn.time.server.netty.tcp.TimeClientNoHalfPacketHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -17,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2023/11/2 21:13
  */
 @Slf4j
-public class TimeClient {
+public class TimeHalfPacketClient {
     /**
      * connect to server
      *
@@ -35,7 +34,7 @@ public class TimeClient {
                         protected void initChannel(SocketChannel ch) throws Exception {
 //                            ch.pipeline().addLast(new TimeClientHandler());
                             //验证无半包处理
-                            ch.pipeline().addLast(new TimeClientNoHalfPacketHandler());
+//                            ch.pipeline().addLast(new TimeClientNoHalfPacketHandler());
                         }
                     });
             //发起异步连接
@@ -50,6 +49,6 @@ public class TimeClient {
 
     public static void main(String[] args) throws Exception {
         int port = 8088;
-        new TimeClient().connect(port, "127.0.0.1");
+        new TimeHalfPacketClient().connect(port, "127.0.0.1");
     }
 }
