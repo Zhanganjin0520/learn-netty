@@ -1,4 +1,4 @@
-package com.netty.learn.time.server.netty.tcp;
+package com.netty.learn.time.server.netty.tcp.client;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -8,6 +8,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -32,9 +34,10 @@ public class TimeHalfPacketClient {
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
-//                            ch.pipeline().addLast(new TimeClientHandler());
                             //验证无半包处理
-//                            ch.pipeline().addLast(new TimeClientNoHalfPacketHandler());
+                            ch.pipeline().addLast(new LineBasedFrameDecoder(1024));
+                            ch.pipeline().addLast(new StringDecoder());
+                            ch.pipeline().addLast(new TimeClientHalfPacketHandler());
                         }
                     });
             //发起异步连接
@@ -48,7 +51,8 @@ public class TimeHalfPacketClient {
     }
 
     public static void main(String[] args) throws Exception {
-        int port = 8088;
+        int port = 8080;
+        log.info("start client on port:{}", port);
         new TimeHalfPacketClient().connect(port, "127.0.0.1");
     }
 }

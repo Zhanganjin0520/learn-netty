@@ -1,7 +1,6 @@
 package com.netty.learn.time.server.netty;
 
-import com.netty.learn.time.server.netty.tcp.TimeServerHalfPacketHandler;
-import com.netty.learn.time.server.netty.tcp.TimeServerNoHalfPacketHandler;
+import com.netty.learn.time.server.netty.tcp.server.TimeServerNoHalfPacketHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;

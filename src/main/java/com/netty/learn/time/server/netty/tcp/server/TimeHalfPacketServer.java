@@ -1,4 +1,4 @@
-package com.netty.learn.time.server.netty.tcp;
+package com.netty.learn.time.server.netty.tcp.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -53,7 +53,8 @@ public class TimeHalfPacketServer {
     }
 
     public static void main(String[] args) {
-        int port = 8088;
+        int port = 8080;
+        log.info("Server started at port:{}", port);
         new TimeHalfPacketServer().bind(port);
     }
 

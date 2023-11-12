@@ -1,4 +1,6 @@
-package com.netty.learn.time.server.netty.tcp;
+package com.netty.learn.time.server.netty.tcp.client;
+
+import java.nio.charset.StandardCharsets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -6,23 +8,19 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author Zhang Anjin
- * @description netty half packet client handler
- * @date 2023/11/5 21:00
+ * @description netty half packet handler
+ * @date 2023/11/12 20:46
  */
 @Slf4j
-public class TimeClientNoHalfPacketHandler extends ChannelInboundHandlerAdapter {
+public class TimeClientHalfPacketHandler extends ChannelInboundHandlerAdapter {
+
     private int counter;
     private byte[] req;
 
-    /**
-     * create a client-side handler
-     */
-    public TimeClientNoHalfPacketHandler() {
-        //line.separator is \n used one byte
+    public TimeClientHalfPacketHandler() {
         req = ("QUERY TIME ORDER" + System.getProperty("line.separator")).getBytes(StandardCharsets.UTF_8);
     }
 
@@ -38,16 +36,13 @@ public class TimeClientNoHalfPacketHandler extends ChannelInboundHandlerAdapter 
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf buf = (ByteBuf) msg;
-        byte[] req = new byte[buf.readableBytes()];
-        buf.readBytes(req);
-        String body = new String(req);
-        log.info("Now is :{}, the counter is: {}", body, ++counter);
+        String body = (String) msg;
+        log.info("Now is : {}; The counter is :{}", body, ++counter);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.warn("Unexpected exception from downstream:{}", cause.getMessage());
+        log.warn("Unexpected exception from downstream :{}", cause.getMessage());
         ctx.close();
     }
 }

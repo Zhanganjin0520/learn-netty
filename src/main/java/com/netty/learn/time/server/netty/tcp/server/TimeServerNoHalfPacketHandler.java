@@ -1,4 +1,4 @@
-package com.netty.learn.time.server.netty.tcp;
+package com.netty.learn.time.server.netty.tcp.server;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
