@@ -61,6 +61,7 @@ public class Elevation {
         final TopocentricFrame tcf = new TopocentricFrame(EARTH, point, "point");
         //max elevation
         ElevationExtremumDetector detector = new ElevationExtremumDetector(tcf)
+                .withThreshold(1.0e-6)
                 .withHandler(new RecordAndContinue());
 //                .withHandler(new Visibility());
         propagator.addEventDetector(detector);
@@ -85,9 +86,9 @@ public class Elevation {
             // Get the date of the extremum
             final Date date = state.getDate().toDate(TimeScalesFactory.getUTC());
             double elevation = FastMath.toDegrees(detector.getElevation(state));
-            if (elevation >= 0) {
+//            if (elevation >= 0) {
                 log.info("Maximum elevation at: " + date + " value (°): " + elevation);
-            }
+//            }
         });
 
 
