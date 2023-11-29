@@ -1,0 +1,7 @@
+package com.netty.learn.time.server.codec.protobuf;
+
+message SubscribeResp{
+  required int32 subReqID = 1;
+  required int32 respCode = 2;
+  required string desc = 3;
+}
